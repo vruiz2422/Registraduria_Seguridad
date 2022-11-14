@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/permisos")
 public class ControladorPermiso {
-    @Autowired
+    @Autowired(required = false)
     private RepositorioPermiso miRepositorioPermiso;
 
     @GetMapping("")

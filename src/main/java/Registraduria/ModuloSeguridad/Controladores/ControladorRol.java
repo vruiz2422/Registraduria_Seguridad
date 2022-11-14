@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/roles")
 public class ControladorRol {
-    @Autowired
+    @Autowired(required = false)
     private RepositorioRol miRepositorioRol;
 
 
@@ -23,7 +23,7 @@ public class ControladorRol {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public Rol create(@RequestBody  Rol infoRol){
-        return this.miRepositorioRol.save(infoRol);
+        return infoRol;
     }
     @GetMapping("{id}")
     public Rol show(@PathVariable String id){

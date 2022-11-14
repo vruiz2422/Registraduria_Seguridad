@@ -14,13 +14,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/permisos-roles")
 public class ControladorPermisosRoles {
-    @Autowired
+    @Autowired(required = false)
     private RepositorioPermisosRoles miRepositorioPermisoRoles;
 
-    @Autowired
+    @Autowired(required = false)
     private RepositorioPermiso miRepositorioPermiso;
 
-    @Autowired
+    @Autowired(required = false)
     private RepositorioRol miRepositorioRol;
 
 

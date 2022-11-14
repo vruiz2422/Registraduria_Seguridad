@@ -13,9 +13,9 @@ import java.security.NoSuchAlgorithmException;
 @RestController
 @RequestMapping("/usuarios")
 public class ControladorUsuario {
-    @Autowired
+    @Autowired(required = false)
     private RepositorioUsuario miRepositorioUsuario;
-    @Autowired
+    @Autowired(required = false)
     private RepositorioRol miRepositorioRol;
     @GetMapping("")
     public List<Usuario> index(){
