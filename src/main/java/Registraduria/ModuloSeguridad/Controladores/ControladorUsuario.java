@@ -1,8 +1,6 @@
 package Registraduria.ModuloSeguridad.Controladores;
-import Registraduria.ModuloSeguridad.Modelos.Rol;
-import Registraduria.ModuloSeguridad.Modelos.Usuario;
-import Registraduria.ModuloSeguridad.Repositorios.RepositorioRol;
 import Registraduria.ModuloSeguridad.Repositorios.RepositorioUsuario;
+import Registraduria.ModuloSeguridad.Modelos.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +11,14 @@ import java.security.NoSuchAlgorithmException;
 @RestController
 @RequestMapping("/usuarios")
 public class ControladorUsuario {
-    @Autowired(required = false)
+    @Autowired
     private RepositorioUsuario miRepositorioUsuario;
-    @Autowired(required = false)
-    private RepositorioRol miRepositorioRol;
+
     @GetMapping("")
     public List<Usuario> index(){
         return this.miRepositorioUsuario.findAll();
     }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public Usuario create(@RequestBody  Usuario infoUsuario){
@@ -29,12 +27,16 @@ public class ControladorUsuario {
     }
     @GetMapping("{id}")
     public Usuario show(@PathVariable String id){
-        Usuario usuarioActual=this.miRepositorioUsuario.findById(id).orElse(null);
+        Usuario usuarioActual=this.miRepositorioUsuario
+                .findById(id)
+                .orElse(null);
         return usuarioActual;
     }
     @PutMapping("{id}")
     public Usuario update(@PathVariable String id,@RequestBody  Usuario infoUsuario){
-        Usuario usuarioActual=this.miRepositorioUsuario.findById(id).orElse(null);
+        Usuario usuarioActual=this.miRepositorioUsuario
+                .findById(id)
+                .orElse(null);
         if (usuarioActual!=null){
             usuarioActual.setSeudonimo(infoUsuario.getSeudonimo());
             usuarioActual.setCorreo(infoUsuario.getCorreo());
@@ -44,6 +46,7 @@ public class ControladorUsuario {
             return null;
         }
     }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("{id}")
     public void delete(@PathVariable String id){
@@ -54,29 +57,6 @@ public class ControladorUsuario {
             this.miRepositorioUsuario.delete(usuarioActual);
         }
     }
-    /**
-     * Relación (1 a n) entre rol y usuario
-     * @param id
-     * @param id_rol
-     * @return
-     */
-    @PutMapping("{id}/rol/{id_rol}")
-    public Usuario asignarRolAUsuario(@PathVariable String id,@PathVariable String id_rol){
-        Usuario usuarioActual=this.miRepositorioUsuario
-                .findById(id)
-                .orElse(null);
-        Rol rolActual=this.miRepositorioRol
-                .findById(id_rol)
-                .orElse(null);
-        if (usuarioActual!=null && rolActual!=null){
-            usuarioActual.setRol(rolActual);
-            return this.miRepositorioUsuario.save(usuarioActual);
-        }else{
-            return null;
-        }
-
-    }
-
     public String convertirSHA256(String password) {
         MessageDigest md = null;
         try {

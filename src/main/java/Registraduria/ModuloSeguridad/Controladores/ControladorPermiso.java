@@ -1,10 +1,10 @@
 package Registraduria.ModuloSeguridad.Controladores;
 
+import Registraduria.ModuloSeguridad.Repositorios.RepositorioPermiso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import Registraduria.ModuloSeguridad.Modelos.Permiso;
-import Registraduria.ModuloSeguridad.Repositorios.RepositorioPermiso;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/permisos")
 public class ControladorPermiso {
-    @Autowired(required = false)
+    @Autowired
     private RepositorioPermiso miRepositorioPermiso;
 
     @GetMapping("")
@@ -55,6 +55,6 @@ public class ControladorPermiso {
         if (permisoActual!=null){
             this.miRepositorioPermiso.delete(permisoActual);
         }
+
     }
 }
-
