@@ -1,4 +1,6 @@
 package Registraduria.ModuloSeguridad.Controladores;
+import Registraduria.ModuloSeguridad.Modelos.Rol;
+import Registraduria.ModuloSeguridad.Repositorios.RepositorioRol;
 import Registraduria.ModuloSeguridad.Repositorios.RepositorioUsuario;
 import Registraduria.ModuloSeguridad.Modelos.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +16,20 @@ public class ControladorUsuario {
     @Autowired
     private RepositorioUsuario miRepositorioUsuario;
 
+    @Autowired
+    private RepositorioRol miRepositorioRol;
+
     @GetMapping("")
     public List<Usuario> index(){
         return this.miRepositorioUsuario.findAll();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public Usuario create(@RequestBody  Usuario infoUsuario){
+    @PostMapping("/rol/{id_rol}")
+    public Usuario create(@PathVariable String id_rol,@RequestBody  Usuario infoUsuario){
+        Rol elRol=this.miRepositorioRol.findById(id_rol).get();
         infoUsuario.setContrasena(convertirSHA256(infoUsuario.getContrasena()));
+        infoUsuario.setRol(elRol);
         return this.miRepositorioUsuario.save(infoUsuario);
     }
     @GetMapping("{id}")
@@ -32,16 +39,24 @@ public class ControladorUsuario {
                 .orElse(null);
         return usuarioActual;
     }
-    @PutMapping("{id}")
-    public Usuario update(@PathVariable String id,@RequestBody  Usuario infoUsuario){
+    @PutMapping("{id}/rol/{id_rol}")
+    public Usuario update(@PathVariable String id,@PathVariable String id_rol,@RequestBody  Usuario infoUsuario){
         Usuario usuarioActual=this.miRepositorioUsuario
                 .findById(id)
                 .orElse(null);
         if (usuarioActual!=null){
-            usuarioActual.setSeudonimo(infoUsuario.getSeudonimo());
-            usuarioActual.setCorreo(infoUsuario.getCorreo());
-            usuarioActual.setContrasena(convertirSHA256(infoUsuario.getContrasena()));
-            return this.miRepositorioUsuario.save(usuarioActual);
+
+            Rol elRol=this.miRepositorioRol.findById(id_rol).get();
+
+            if(elRol != null){
+                usuarioActual.setSeudonimo(infoUsuario.getSeudonimo());
+                usuarioActual.setCorreo(infoUsuario.getCorreo());
+                usuarioActual.setRol(elRol);
+                usuarioActual.setContrasena(convertirSHA256(infoUsuario.getContrasena()));
+                return this.miRepositorioUsuario.save(usuarioActual);
+            }else{
+                return null;
+            }
         }else{
             return null;
         }
@@ -57,6 +72,7 @@ public class ControladorUsuario {
             this.miRepositorioUsuario.delete(usuarioActual);
         }
     }
+
     public String convertirSHA256(String password) {
         MessageDigest md = null;
         try {
